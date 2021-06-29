@@ -129,7 +129,7 @@ class Settings(QWidget):
 		if p1_name == 'Input player 1 name':
 			p1_name = "Player 1"
 		if p2_name == 'Input player 2 name':
-			if self.mode == 'Bot':
+			if mode == 'Bot':
 				p2_name = "Bot"
 			else:
 				p2_name = "Player 2"
@@ -143,8 +143,10 @@ class Settings(QWidget):
 		self.p1_input.setText(p1_name)
 		self.p1_input.setStyleSheet("""color: black;""")
 		self.p2_input.setText(p2_name)
+		self.p2_input.setStyleSheet("""color: black;""")
 		self.parent.register(Game(self), "Game")
 		game_page = self.parent.m_pages["Game"]
+		game_page.game_info.fit_content()
 
 		self.goto("Game")
 

@@ -10,7 +10,7 @@ class Board(QWidget):
 		self.background = background
 		self.border = border
 		self.settings = game_settings
-		self.bot_delay = 500
+		self.bot_delay = 800
 		self.mark_counter = 0
 		if self.settings:
 			self.mode = self.settings["Mode"]
@@ -27,8 +27,8 @@ class Board(QWidget):
 		try:
 			self.parent.p1_name.setText(f"{self.p1['Mark']} {self.p1['Name']}")
 			self.parent.p2_name.setText(f"{self.p2['Name']} {self.p2['Mark']}")
-		except Exception as err:
-			print(err)
+		except:
+			pass
 
 
 		if not self.border:
@@ -107,7 +107,6 @@ class Board(QWidget):
 		self.difficulty = difficulty
 		self.game_started = True
 		self.info_board = self.parent.game_info.info_board
-		#self.timer_thread = Timer(5, self)
 		self.randomize_mark()
 
 		self.turns = choice(("P1", "P2"))
@@ -120,15 +119,11 @@ class Board(QWidget):
 		self.start_game()
 
 	def start_game(self):
+		self.show_turn()
 		if self.mode == 'Bot':
-			self.timer_color()
 			if self.turns == 'P2':
-				self.info_board.setText(f"{self.p2['Name']} turns!")
+				self.show_turn()
 				QTimer.singleShot(self.bot_delay, self.bot_turns)
-			else:
-				self.info_board.setText(f"{self.p1['Name']} turns!")
-		else:
-			pass
 
 	def randomize_mark(self):
 		self.p1["Mark"] = choice(("〇", "🞩"))
@@ -154,13 +149,6 @@ class Board(QWidget):
 		else:
 			return box
 
-	def timer_color(self):
-		if self.mode == 'Bot':
-			color = "gray" if self.turns == 'P2' else "#333333"
-			self.info_board.setStyleSheet(f"""color: {color};
-										      background: white;
-										      border: 1px solid lightgray;""")
-
 	def bot_ai(self):
 		pass
 
@@ -170,18 +158,11 @@ class Board(QWidget):
 				box = self.random_box()
 				if box:
 					self.mark_counter += 1
+					box.setText(self.current_mark)
 					self.is_ended()
-					box.setText(self.p2["Mark"])
 					self.change_turns()
 
-
-	def create_delay(self):
-		timer = QTimer(self)
-		timer.setSingleShot(True)
-		timer.timeout.connect(self.bot_pick)
-		return timer
-
-	def player_turns(self, box):
+	def player_turns(self, box, turns=None):
 		if self.game_started:
 			if self.mode == 'Bot':
 				if self.turns == 'P1':
@@ -190,6 +171,11 @@ class Board(QWidget):
 					self.is_ended()
 					self.change_turns()
 					QTimer.singleShot(self.bot_delay, self.bot_turns)
+			else:
+				self.mark_counter += 1
+				box.setText(self.current_mark)
+				self.is_ended()
+				self.change_turns()
 
 	def change_turns(self):
 		if self.game_started:
@@ -199,8 +185,20 @@ class Board(QWidget):
 			else:
 				self.turns = "P1"
 				self.current_mark = self.p1["Mark"]
-			self.timer_color()
-			self.info_board.setText(f"{self.p2['Name'] if self.turns == 'P2' else self.p1['Name']} turns!")
+
+			self.show_turn()
+			self.parent.game_info.fit_content()
+
+	def show_turn(self):
+		turn = self.p2 if self.turns == 'P2' else self.p1
+		if turn == self.p1:
+			self.parent.p2_name.setStyleSheet("color: gray;")
+			self.parent.p1_name.setStyleSheet("color: black")
+		else:
+			self.parent.p1_name.setStyleSheet("color: gray;")
+			self.parent.p2_name.setStyleSheet("color: black;")
+		self.info_board.setText(f"{turn['Name']} turn!")
+
 
 	def check_col(self):
 		counters = [[], [], []]
@@ -247,44 +245,44 @@ class Board(QWidget):
 
 		return any([len(counter) == 3 for counter in counters])
 
-	def reset(self):
+	def show_win(self, winner):
+		if winner == self.p1:
+			self.parent.p1_name.setStyleSheet("color: green;")
+			self.parent.p2_name.setStyleSheet("color: red;")
+		else:
+			self.parent.p1_name.setStyleSheet("color: red;")
+			self.parent.p2_name.setStyleSheet("color: green;")
 		self.game_started = False
+		self.info_board.setText(f"{winner['Name']} won!")
+		for i in range(3):
+			for j in range(3):
+				mark = self.boards[i][j]
+				stylesheet = ""
+				if mark.text() == winner['Mark']:
+					stylesheet = f"""background-color: {self.background};
+									 color: green;
+					  				 border: 1px solid #424242;"""
+				else:
+					stylesheet = f"""background-color: {self.background};
+									 color: red;
+					  				 border: 1px solid #424242;"""
+				mark.setStyleSheet(stylesheet)
+		QTimer.singleShot(3500, lambda: self.parent.goto("Settings"))
 
-		for row in range(3):
-			for col in range(3):
-				self.boards[row][col].setText("")
-
-		self.turns = "P1" #Make this random
-		self.current_mark = self.p1["Mark"]
+	def show_tie(self):
+		self.game_started = False
+		self.info_board.setText("It's a tie! GG")
+		QTimer.singleShot(3500, lambda: self.parent.goto("Settings"))
 
 	def is_ended(self):
 		if 4 < self.mark_counter < 9:
 			counters = [self.check_col(), self.check_diag(), self.check_row()]
 			if any(counters):
 				winner = self.p1 if self.current_mark == self.p1["Mark"] else self.p2
-				if winner == self.p1:
-					self.parent.p1_name.setStyleSheet("color: green;")
-					self.parent.p2_name.setStyleSheet("color: red;")
-				else:
-					self.parent.p1_name.setStyleSheet("color: red;")
-					self.parent.p2_name.setStyleSheet("color: lightgreen;")
-				self.game_started = False
-				self.info_board.setText(f"{winner['Name']} won!")
-				for i in range(3):
-					for j in range(3):
-						mark = self.boards[i][j]
-						stylesheet = ""
-						if mark.text() == winner['Mark']:
-							stylesheet = f"""background-color: {self.background};
-											 color: green;
-							  				 border: 1px solid #424242;"""
-							mark.setStyleSheet(stylesheet)
-
-				QTimer.singleShot(8000, lambda: self.parent.goto("Settings"))
+				self.show_win(winner)
 		elif self.mark_counter == 9:
-			self.game_started = False
-			self.info_board.setText("It's a Tie! GG")
-			QTimer.singleShot(8000, lambda: self.parent.goto("Settings"))
+			self.show_tie()
+
 
 
 
