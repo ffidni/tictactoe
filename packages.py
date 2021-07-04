@@ -4,12 +4,3 @@ from PyQt5.QtWidgets import QLineEdit, QMessageBox, QStyledItemDelegate, QMainWi
 from random import randint, choice
 from sys import argv, exit
 from time import sleep
-
-
-#app = QApplication([])
-#msg = QMessageBox()
-#msg.setIcon(QMessageBox.Critical)
-#msg.setText("Error")
-#msg.setInformativeText('More information')
-#msg.setWindowTitle("Error")
-#msg.exec_()

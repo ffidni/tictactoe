@@ -69,7 +69,7 @@ class Game(QWidget):
 		self.board.show_win(winner)
 
 	def resizeEvent(self, event):
-		print(self.width(), self.height())
+		pass
 
 class GameInfo(QWidget):
 

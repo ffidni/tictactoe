@@ -86,11 +86,6 @@ class Settings(QWidget):
 		self.setLayout(self.main_layout)
 
 	def setup_stylesheet(self):
-		#self.setStyleSheet("""background: #f0f0f0;""")
-		#self.setObjectName("Main")
-		#self.setStyleSheet("""#Main{
-		#					    background: yellow;
-		#					   }""")
 		self.title.setStyleSheet("""background: transparent;
 									border: none;""")
 		self.p1_input.setStyleSheet("""color: gray;""")

@@ -3,7 +3,6 @@ from board import *
 from settings import *
 from game import *
 
-
 class Main(QStackedWidget):
 
 	def __init__(self):
@@ -42,7 +41,6 @@ class Main(QStackedWidget):
 		if name in self.m_pages:
 			widget = self.m_pages[name]
 			self.setCurrentWidget(widget)
-
 
 if __name__ == '__main__':
 	app = QApplication(argv)
