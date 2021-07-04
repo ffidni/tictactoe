@@ -39,9 +39,9 @@ class Settings(QWidget):
 			name_input.setFixedSize(135, 30)
 
 
-		self.title.setFont(QFont("MS Shell Dlg 2", 28))
+		self.title.setFont(QFont("MS Shell Dlg 2", 46))
 		self.title.setIcon(QIcon("Assets/Icons/logo.png"))
-		self.title.setFixedSize(300, 100)
+		#self.title.setFixedSize(300, 100)
 		self.title.setIconSize(QSize(32, 32))
 		self.board.installEventFilter(self)
 		self.settings_title.setFont(QFont("Source Sans Pro", 24))

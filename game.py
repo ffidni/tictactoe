@@ -65,8 +65,9 @@ class Game(QWidget):
 				self.button_widget.toggle_btn.setText(" Pause")
 
 	def surrender(self):
-		winner = self.board.p2 if self.board.p1["Mark"] == self.board.current_mark else self.board.p1
-		self.board.show_win(winner)
+		if self.board.game_started:
+			winner = self.board.p2 if self.board.p1["Mark"] == self.board.current_mark else self.board.p1
+			self.board.show_win(winner)
 
 	def resizeEvent(self, event):
 		pass
