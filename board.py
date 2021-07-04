@@ -227,7 +227,7 @@ class Board(QWidget):
 				return True
 		if mark_2:
 			if mark_2 == board[1][1].text() and mark_2 == board[2][0].text():
-				self.winner_pos = ((0, 2), (1, 1), (0, 0))
+				self.winner_pos = ((0, 2), (1, 1), (2, 0))
 				return True
 		return False
 
@@ -245,9 +245,14 @@ class Board(QWidget):
 		self.game_started = False
 		self.info_board.setText(f"{winner['Name']} won!")
 		for pos in self.winner_pos:
-			self.boards[pos[0]][pos[1]].setStyleSheet("""background: green;
+			color = "#218c74"
+			if self.mode == 'Bot':
+				if winner['Name'] != self.p1["Name"]:
+					color = "#b33939"
+
+			self.boards[pos[0]][pos[1]].setStyleSheet(f"""background: {self.background};
 														 border: 1px solid #424242;
-														 color: white;""")
+														 color: {color};""")
 		QTimer.singleShot(3500, lambda: self.parent.goto("Settings"))
 
 	def show_tie(self):
@@ -265,9 +270,3 @@ class Board(QWidget):
 				if self.mark_counter == 9:
 					self.show_tie()
 
-	def resizeEvent(self, event=None, w_factor=None, h_factor=None):
-		if w_factor and h_factor:
-			for i in range(3):
-				for j in range(3):
-					eval(f"self.box_{i}x{j}.setFixedSize(self.size[0]*w_factor, self.size[1]*h_factor)")
-					eval(f"self.box_{i}x{j}.setFont(QFont('Bahnschrift Light', 23*h_factor))")

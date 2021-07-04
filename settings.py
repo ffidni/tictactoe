@@ -10,7 +10,6 @@ class Settings(QWidget):
 		self.parent = parent
 		self.setWindowTitle("Tic Tac Toe")
 		self.installEventFilter(self)
-		#self.setMinimumSize(self.w, self.h)
 		self.init_ui()
 
 	def init_ui(self):
@@ -22,7 +21,7 @@ class Settings(QWidget):
 
 	def widget_management(self):
 		self.title = QPushButton("Tic Tac Toe")
-		self.board = Board(background="#EAEAEA", size=[105, 105], border=True, is_menu=True, parent=self)
+		self.board = Board(background="#ECE8DF", size=[105, 105], border=True, is_menu=True, parent=self)
 		self.settings_title = QLabel("Game Settings")
 		self.play_with = QLabel("Play with:")
 		self.play_with_input = QComboBox()
@@ -40,9 +39,6 @@ class Settings(QWidget):
 
 
 		self.title.setFont(QFont("MS Shell Dlg 2", 46))
-		self.title.setIcon(QIcon("Assets/Icons/logo.png"))
-		#self.title.setFixedSize(300, 100)
-		self.title.setIconSize(QSize(32, 32))
 		self.board.installEventFilter(self)
 		self.settings_title.setFont(QFont("Source Sans Pro", 24))
 		self.play_with_input.currentTextChanged.connect(self.show_difficulty)
@@ -66,9 +62,7 @@ class Settings(QWidget):
 		self.main_layout.addWidget(self.title, alignment=Qt.AlignCenter)
 		self.body_layout.addSpacing(50)
 		self.body_layout.addWidget(self.board)
-		self.input_layout.addSpacing(60)
-		self.input_layout.addWidget(self.settings_title, alignment=Qt.AlignCenter | Qt.AlignBottom)
-		self.input_layout.addSpacing(20)
+		self.input_layout.addSpacing(100)
 		self.input_layout.addWidget(self.play_with, alignment=Qt.AlignCenter | Qt.AlignBottom)
 		self.input_layout.addWidget(self.play_with_input, alignment=Qt.AlignCenter)
 		self.input_layout.addWidget(self.difficulty, alignment=Qt.AlignCenter | Qt.AlignBottom)
@@ -106,8 +100,8 @@ class Settings(QWidget):
 			try:
 				self.p2_input.setText("Bot")
 				self.p2_input.setStyleSheet("""color: black;""")
-				self.input_layout.insertWidget(5, self.difficulty, alignment=Qt.AlignCenter | Qt.AlignBottom)
-				self.input_layout.insertWidget(6, self.difficulty_input, alignment=Qt.AlignCenter | Qt.AlignBottom)
+				self.input_layout.insertWidget(3, self.difficulty, alignment=Qt.AlignCenter | Qt.AlignBottom)
+				self.input_layout.insertWidget(4, self.difficulty_input, alignment=Qt.AlignCenter | Qt.AlignBottom)
 				self.difficulty.show()
 				self.difficulty_input.show()
 			except:
@@ -165,13 +159,6 @@ class Settings(QWidget):
 						focused_widget.clearFocus()
 
 		return super().eventFilter(obj, event)
-
-	def resizeEvent(self, event):
-		self.w_factor = self.width() / self.parent.w
-		self.h_factor = self.height() / self.parent.h
-
-		print(self.width(), self.height())
-
 
 
 

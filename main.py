@@ -11,7 +11,9 @@ class Main(QStackedWidget):
 		self.w_factor, self.h_factor = 1, 1
 
 		self.setWindowTitle("Tic Tac Toe")
-		self.setMinimumSize(self.w, self.h)
+		self.setObjectName("Main")
+		self.setStyleSheet("""#Main{background: #f7f1e3;}""")
+		self.setFixedSize(self.w, self.h)
 		self.resize(self.w, self.h)
 		self.installEventFilter(self)
 
@@ -45,7 +47,7 @@ class Main(QStackedWidget):
 if __name__ == '__main__':
 	app = QApplication(argv)
 	app.setStyleSheet("""QComboBox{
-								background-color: white;
+								background-color: #F6F4EE;
 								border: 1px solid black;
 							}
 							QComboBox:drop-down{
@@ -60,7 +62,7 @@ if __name__ == '__main__':
 								selection-border-color: red;
 							}
 							QSpinBox{
-								background-color: white;
+								background-color: #F6F4EE;
 								border: 1px solid black;
 							}
 							QSpinBox:down-button{
@@ -68,6 +70,9 @@ if __name__ == '__main__':
 							}
 							QSpinBox:up-button{
 								border: none;
+							}
+							QLineEdit{
+								background: #F6F4EE;
 							}
 
 						""")

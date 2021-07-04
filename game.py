@@ -18,7 +18,7 @@ class Game(QWidget):
 		self.p1_name = QLabel(self.settings["P1"]["Name"])
 		self.p2_name = QLabel(self.settings["P2"]["Name"])
 		self.game_info = GameInfo(self)
-		self.board = Board(background="#EAEAEA", size=[115, 115], border=True, game_settings=self.settings, parent=self)
+		self.board = Board(background="#ECE8DF", size=[115, 115], border=True, game_settings=self.settings, parent=self)
 		self.button_widget = ButtonWidget(self)
 
 		self.p1_name.setFont(QFont("Source Sans Pro", 12))
@@ -69,9 +69,6 @@ class Game(QWidget):
 			winner = self.board.p2 if self.board.p1["Mark"] == self.board.current_mark else self.board.p1
 			self.board.show_win(winner)
 
-	def resizeEvent(self, event):
-		pass
-
 class GameInfo(QWidget):
 
 	def __init__(self, parent=None):
@@ -85,8 +82,6 @@ class GameInfo(QWidget):
 	def widget_management(self):
 		self.info_w, self.info_h = 180, 30
 		self.clock = QPushButton(icon=QIcon("Assets/Icons/clock.png"))
-		self.best_of = QLabel(f"Best of: 3")
-		self.score = QLabel("Score: 0-0")
 		self.line = QFrame()
 		self.info_board = QLabel()
 
@@ -94,14 +89,12 @@ class GameInfo(QWidget):
 		self.clock.setIconSize(QSize(58, 58))
 		self.clock.setStyleSheet("""background: transparent;
 									border: none;""")
-		self.best_of.setFont(QFont("Source Sans Pro", 16))
-		self.score.setFont(QFont("Source Sans Pro", 16))
 		self.line.setFrameShape(QFrame.HLine)
 		self.line.setFixedWidth(230)
 		self.info_board.setFixedSize(self.info_w, self.info_h)
 		self.info_board.setFont(QFont("Source Sans Pro", 12))
 		self.info_board.setAlignment(Qt.AlignCenter)
-		self.info_board.setStyleSheet("""background: white;
+		self.info_board.setStyleSheet("""background: #F7F7F5;
 										 border: 1px solid lightgray;""")
 
 	def layout_management(self):
@@ -158,7 +151,7 @@ class ButtonWidget(QWidget):
 
 	def setup_stylesheet(self):
 		self.surrender_btn.setStyleSheet("""QPushButton{
-							  					background: #f5f5f5;
+							  					background: #F7F7F5;
 							  					border: 1px solid #e0e0e0;
 							  			   }
 							  				QPushButton:hover{
@@ -166,16 +159,16 @@ class ButtonWidget(QWidget):
 							  			   }""")
 		if self.parent.settings['Mode'] == 'Bot':
 			self.toggle_btn.setStyleSheet("""QPushButton{
-								  					background: #f5f5f5;
+								  					background: #F7F7F5;
 								  					border: 1px solid #e0e0e0;
 								  			   }
 								  				QPushButton:hover{
-								  					background: #eeeeee;
+								  					background: #E9E6DF;
 								  			   }""")
 		else:
 			self.toggle_btn.setStyleSheet("""QPushButton{
 													color: gray;
-								  					background: #f5f5f5;
+								  					background: #F7F7F5;
 								  					border: 1px solid #e0e0e0;
 								  			   }""")
 
