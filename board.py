@@ -1,4 +1,5 @@
 from packages import *
+from ai import *
 
 class Board(QWidget):
 
@@ -64,15 +65,15 @@ class Board(QWidget):
 		self.setLayout(self.layout)
 
 	def setup_clicked(self):
-		self.box_0x0.clicked.connect(lambda: self.box_clicked(self.box_0x0))
-		self.box_0x1.clicked.connect(lambda: self.box_clicked(self.box_0x1))
-		self.box_0x2.clicked.connect(lambda: self.box_clicked(self.box_0x2))
-		self.box_1x0.clicked.connect(lambda: self.box_clicked(self.box_1x0))
-		self.box_1x1.clicked.connect(lambda: self.box_clicked(self.box_1x1))
-		self.box_1x2.clicked.connect(lambda: self.box_clicked(self.box_1x2))
-		self.box_2x0.clicked.connect(lambda: self.box_clicked(self.box_2x0))
-		self.box_2x1.clicked.connect(lambda: self.box_clicked(self.box_2x1))
-		self.box_2x2.clicked.connect(lambda: self.box_clicked(self.box_2x2))
+		self.box_0x0.clicked.connect(lambda: self.player_turns(self.box_0x0))
+		self.box_0x1.clicked.connect(lambda: self.player_turns(self.box_0x1))
+		self.box_0x2.clicked.connect(lambda: self.player_turns(self.box_0x2))
+		self.box_1x0.clicked.connect(lambda: self.player_turns(self.box_1x0))
+		self.box_1x1.clicked.connect(lambda: self.player_turns(self.box_1x1))
+		self.box_1x2.clicked.connect(lambda: self.player_turns(self.box_1x2))
+		self.box_2x0.clicked.connect(lambda: self.player_turns(self.box_2x0))
+		self.box_2x1.clicked.connect(lambda: self.player_turns(self.box_2x1))
+		self.box_2x2.clicked.connect(lambda: self.player_turns(self.box_2x2))
 
 	def setup_stylesheet(self, row, col):
 		if self.border:
@@ -112,46 +113,38 @@ class Board(QWidget):
 		self.p1["Mark"] = choice(("〇", "🞩"))
 		self.p2["Mark"] = "〇" if self.p1["Mark"] == '🞩' else "🞩"
 
-	def box_clicked(self, box):
-		if not box.text():
-			if self.game_started:
-				self.player_turns(box)
-
 	def random_box(self, stepped=[]):
 		row, col = randint(0, 2), randint(0, 2)
 		box = self.boards[row][col]
-
-		if len(stepped) == 9:
-			stepped.clear()
-			return None
 		if box.text():
-			if box not in stepped:
-				stepped.append(box)
-			return self.random_box(stepped)
+			return self.random_box()
 		else:
 			return box
 
 	def set_chance(self):
 		chance = None
 		if self.difficulty == 'Medium':
-			chance = 0.5
+			chance = 0.764
 		elif self.difficulty == 'Hard':
 			chance = 1
 		return chance
 
 	def ai_turn(self):
 		chance = self.set_chance()
-		if random() < chance:
-			self.ai_place()
+		if self.difficulty == 'Medium':
+			if random() < chance:
+				print("A")
+				i, j = find_best_move(self.boards, self.p2["Mark"], self.p1["Mark"], self.mark_counter)
+				box = self.boards[i][j]
+			else:
+				print("B")
+				box = self.random_box()
 		else:
-			box = self.random_box()
+			i, j = find_best_move(self.boards, self.p2["Mark"], self.p1["Mark"], self.mark_counter)
+			box = self.boards[i][j]
 
 		return box
 
-	def ai_place(self):
-		row = self.check_row(ai=True)  
-		diag = self.check_diag(ai=True)  
-		col = self.check_col(ai=True)  
 
 	def bot_turns(self, from_start=False):
 		if self.game_started:
@@ -169,20 +162,21 @@ class Board(QWidget):
 				else:
 					self.bot_turns()
 
-	def player_turns(self, box, turns=None):
-		if self.game_started:
-			if self.mode == 'Bot':
-				if self.turns == 'P1':
+	def player_turns(self, box):
+		if not box.text():
+			if self.game_started:
+				if self.mode == 'Bot':
+					if self.turns == 'P1':
+						self.mark_counter += 1
+						box.setText(self.current_mark)
+						self.is_ended()
+						self.change_turns()
+						QTimer.singleShot(self.bot_delay, self.bot_turns)
+				else:
 					self.mark_counter += 1
 					box.setText(self.current_mark)
 					self.is_ended()
 					self.change_turns()
-					QTimer.singleShot(self.bot_delay, self.bot_turns)
-			else:
-				self.mark_counter += 1
-				box.setText(self.current_mark)
-				self.is_ended()
-				self.change_turns()
 
 	def change_turns(self):
 		if self.game_started:
@@ -207,7 +201,7 @@ class Board(QWidget):
 		self.info_board.setText(f"{turn['Name']} turn!")
 
 
-	def check_col(self, ai=False):
+	def check_col(self):
 		for i in range(3):
 			board = self.boards
 			mark = board[i][0].text()
@@ -217,8 +211,8 @@ class Board(QWidget):
 					return True
 		return False
 
-	def check_diag(self, ai=False):
-		board = self.boards
+	def check_diag(self):
+		board = self.boards	
 		mark = board[0][0].text()
 		mark_2 = board[0][2].text()
 		if mark:
@@ -231,7 +225,7 @@ class Board(QWidget):
 				return True
 		return False
 
-	def check_row(self, ai=False):
+	def check_row(self):
 		for i in range(3):
 			board = self.boards
 			mark = board[0][i].text()
@@ -260,13 +254,17 @@ class Board(QWidget):
 		self.info_board.setText("It's a tie! GG")
 		QTimer.singleShot(3500, lambda: self.parent.goto("Settings"))
 
+	def evaluate(self):
+		self.check_col()
+		self.check_diag()
+		self.check_row()
+
 	def is_ended(self):
 		if 4 < self.mark_counter <= 9:
-			evaluate = [self.check_col(), self.check_diag(), self.check_row()]
-			if any(evaluate):
+			self.evaluate()
+			if self.winner_pos:
 				winner = self.p1 if self.current_mark == self.p1["Mark"] else self.p2
 				self.show_win(winner)
 			else:
 				if self.mark_counter == 9:
 					self.show_tie()
-
