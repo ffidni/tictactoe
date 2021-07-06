@@ -194,10 +194,10 @@ class Board(QWidget):
 		turn = self.p2 if self.turns == 'P2' else self.p1
 		if turn == self.p1:
 			self.parent.p2_name.setStyleSheet("color: gray;")
-			self.parent.p1_name.setStyleSheet("color: black")
+			self.parent.p1_name.setStyleSheet("color: #E0E0E0;")
 		else:
 			self.parent.p1_name.setStyleSheet("color: gray;")
-			self.parent.p2_name.setStyleSheet("color: black;")
+			self.parent.p2_name.setStyleSheet("color: #E0E0E0;")
 		self.info_board.setText(f"{turn['Name']} turn!")
 
 
@@ -252,6 +252,8 @@ class Board(QWidget):
 	def show_tie(self):
 		self.game_started = False
 		self.info_board.setText("It's a tie! GG")
+		self.parent.p1_name.setStyleSheet("color: #E0E0E0;")
+		self.parent.p2_name.setStyleSheet("color: #E0E0E0;")
 		QTimer.singleShot(3500, lambda: self.parent.goto("Settings"))
 
 	def evaluate(self):
@@ -268,3 +270,4 @@ class Board(QWidget):
 			else:
 				if self.mark_counter == 9:
 					self.show_tie()
+

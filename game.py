@@ -18,11 +18,13 @@ class Game(QWidget):
 		self.p1_name = QLabel(self.settings["P1"]["Name"])
 		self.p2_name = QLabel(self.settings["P2"]["Name"])
 		self.game_info = GameInfo(self)
-		self.board = Board(background="#ECE8DF", size=[115, 115], border=True, game_settings=self.settings, parent=self)
+		self.board = Board(background="#D1D1D1", size=[115, 115], border=True, game_settings=self.settings, parent=self)
 		self.button_widget = ButtonWidget(self)
 
 		self.p1_name.setFont(QFont("Source Sans Pro", 12))
 		self.p2_name.setFont(QFont("Source Sans Pro", 12))
+		self.p1_name.setStyleSheet("color: #E0E0E0;")
+		self.p2_name.setStyleSheet("color: #E0E0E0;")
 		self.button_widget.surrender_btn.clicked.connect(self.surrender)
 		self.button_widget.toggle_btn.clicked.connect(lambda: self.toggle(self.button_widget.toggle_btn.text()))
 
@@ -91,6 +93,7 @@ class GameInfo(QWidget):
 									border: none;""")
 		self.line.setFrameShape(QFrame.HLine)
 		self.line.setFixedWidth(230)
+		self.line.setStyleSheet("color: gray;")
 		self.info_board.setFixedSize(self.info_w, self.info_h)
 		self.info_board.setFont(QFont("Source Sans Pro", 12))
 		self.info_board.setAlignment(Qt.AlignCenter)
@@ -142,10 +145,12 @@ class ButtonWidget(QWidget):
 		self.surrender_btn.setIcon(QIcon("Assets/Icons/surrender_flag.png"))
 		self.surrender_btn.setFixedSize(100, 32)
 		self.surrender_btn.setIconSize(QSize(24, 24))
+		self.surrender_btn.setCursor(QCursor(Qt.PointingHandCursor))
 		if self.parent.settings['Mode'] == 'Bot':
 			self.toggle_btn.setIcon(QIcon("Assets/Icons/pause_button.png"))
 		else:
 			self.toggle_btn.setIcon(QIcon("Assets/Icons/pause_button_disabled.png"))
+		self.toggle_btn.setCursor(QCursor(Qt.PointingHandCursor))
 		self.toggle_btn.setFixedSize(100, 32)
 		self.toggle_btn.setIconSize(QSize(24, 24))
 
@@ -153,23 +158,28 @@ class ButtonWidget(QWidget):
 		self.surrender_btn.setStyleSheet("""QPushButton{
 							  					background: #F7F7F5;
 							  					border: 1px solid #e0e0e0;
+							  					border-radius: 1.5px;
 							  			   }
 							  				QPushButton:hover{
-							  					background: #eeeeee;
+							  					background: #E1E1E1;
+							  					border: 1px solid #E1E1E1
 							  			   }""")
 		if self.parent.settings['Mode'] == 'Bot':
 			self.toggle_btn.setStyleSheet("""QPushButton{
 								  					background: #F7F7F5;
 								  					border: 1px solid #e0e0e0;
+								  					border-radius: 1.5px;
 								  			   }
 								  				QPushButton:hover{
-								  					background: #E9E6DF;
+								  					border: 1px solid #E1E1E1;
+								  					background: #E1E1E1;
 								  			   }""")
 		else:
 			self.toggle_btn.setStyleSheet("""QPushButton{
 													color: gray;
 								  					background: #F7F7F5;
 								  					border: 1px solid #e0e0e0;
+								  					border-radius: 1.5px;
 								  			   }""")
 
 
@@ -177,6 +187,7 @@ class ButtonWidget(QWidget):
 		self.main_layout = QHBoxLayout()
 
 		self.main_layout.addWidget(self.surrender_btn, alignment=Qt.AlignRight)
+		self.main_layout.addSpacing(5)
 		self.main_layout.addWidget(self.toggle_btn, alignment=Qt.AlignLeft)
 		self.setLayout(self.main_layout)
 		

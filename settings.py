@@ -21,7 +21,7 @@ class Settings(QWidget):
 
 	def widget_management(self):
 		self.title = QPushButton("Tic Tac Toe")
-		self.board = Board(background="#ECE8DF", size=[105, 105], border=True, is_menu=True, parent=self)
+		self.board = Board(background="#D1D1D1", size=[105, 105], border=True, is_menu=True, parent=self)
 		self.settings_title = QLabel("Game Settings")
 		self.play_with = QLabel("Play with:")
 		self.play_with_input = QComboBox()
@@ -33,6 +33,7 @@ class Settings(QWidget):
 
 		for name in ('play_with', 'difficulty'):
 			name_label = eval(f"self.{name}")
+			name_label.setStyleSheet("color: #D1D1D1;")
 			name_input = eval(f"self.{name}_input")
 			name_label.setFont(QFont("MS Shell Dlg 2", 10))
 			name_input.setFixedSize(135, 30)
@@ -81,12 +82,17 @@ class Settings(QWidget):
 
 	def setup_stylesheet(self):
 		self.title.setStyleSheet("""background: transparent;
-									border: none;""")
-		self.p1_input.setStyleSheet("""color: gray;""")
+									border: none;
+									color: #D1D1D1;""")
+		self.p1_input.setStyleSheet("""color: gray;
+									   border: 1px solid black;""")
+		self.change_name.setStyleSheet("color: #D1D1D1;")
 		if self.difficulty.isHidden():
-			self.p2_input.setStyleSheet("""color: gray;""")
+			self.p2_input.setStyleSheet("""color: gray;
+										   border: 1px solid black;""")
 		else:
-			self.p2_input.setStyleSheet("""color: black;""")
+			self.p2_input.setStyleSheet("""color: black;
+										   border: 1px solid black;""")
 
 	def show_difficulty(self, text):
 		if text == 'Friend':
